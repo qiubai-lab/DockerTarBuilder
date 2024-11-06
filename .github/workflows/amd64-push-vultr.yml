@@ -9,7 +9,7 @@ on:
       registry_addr:
         description: '请填写镜像仓库地址(不要带https://或http://)'
         required: true
-        default: 'docker.io' 
+        default: 'sjc.vultrcr.com/qbstudio' 
       registry_username:
         description: '请填写镜像仓库用户名'
         required: true
