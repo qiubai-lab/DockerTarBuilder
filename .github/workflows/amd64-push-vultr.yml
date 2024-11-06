@@ -38,8 +38,7 @@ jobs:
 
     - name: Tag and Push Docker Images
       run: |
-        images="${{ github.event.inputs.docker_images }}"
-        docker tag $images ${{ github.event.inputs.registry_addr}}/$images
-        docker push ${{ github.event.inputs.registry_addr}}/$images
-        # docker tag ${{ github.event.inputs.docker_images }} `echo "${{ github.event.inputs.registry_addr}}" | awk '{gsub(/https?:\/\//, ""); print}'`/${{ github.event.inputs.docker_images }}
-        # docker push `echo "${{ github.event.inputs.registry_addr}}" | awk '{gsub(/https?:\/\//, ""); print}'`/${{ github.event.inputs.docker_images }}
+        image="${{ github.event.inputs.docker_images }}"
+        registry_image="${{ github.event.inputs.registry_addr}}/${{ github.event.inputs.docker_images }}"
+        docker tag $image $registry_image
+        docker push $registry_image
