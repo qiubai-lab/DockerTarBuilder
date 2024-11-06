@@ -29,7 +29,7 @@ jobs:
 
     - name: Login to Docker Registry
       run: |
-          echo "${{ github.event.inputs.registry_password }}" | docker login -u "{{ github.event.inputs.registry_username }}" --password-stdin "${{ github.event.inputs.registry_addr}}"
+          echo "${{ github.event.inputs.registry_password }}" | docker login -u "${{ github.event.inputs.registry_username }}" --password-stdin "${{ github.event.inputs.registry_addr}}"
 
     - name: Clean up Docker to free space
       run: |
