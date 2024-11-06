@@ -31,14 +31,12 @@ jobs:
       run: |
           echo "${{ github.event.inputs.registry_password }}" | docker login -u "${{ github.event.inputs.registry_username }}" --password-stdin "${{ github.event.inputs.registry_addr}}"
 
+    - name: Tag and Push Docker Images
+      run: |
+        docker tag "${{ github.event.inputs.docker_images }}" "${{ github.event.inputs.registry_addr}}/${{ github.event.inputs.docker_images }}"
+        docker push "${{ github.event.inputs.registry_addr}}/${{ github.event.inputs.docker_images }}"
+
     - name: Clean up Docker to free space
       run: |
           docker system prune -a -f
           docker volume prune -f
-
-    - name: Tag and Push Docker Images
-      run: |
-        image="${{ github.event.inputs.docker_images }}"
-        registry_image="${{ github.event.inputs.registry_addr}}/${{ github.event.inputs.docker_images }}"
-        docker tag $image $registry_image
-        docker push $registry_image
