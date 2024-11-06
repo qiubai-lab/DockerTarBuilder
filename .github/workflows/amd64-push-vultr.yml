@@ -30,6 +30,10 @@ jobs:
     - name: Login to Docker Registry
       run: |
           echo "${{ github.event.inputs.registry_password }}" | docker login -u "${{ github.event.inputs.registry_username }}" --password-stdin "${{ github.event.inputs.registry_addr}}"
+    
+    - name: Pull Docker Images
+      run: |
+        docker pull "${{ github.event.inputs.docker_images }}" --platform "linux/amd64"
 
     - name: Tag and Push Docker Images
       run: |
