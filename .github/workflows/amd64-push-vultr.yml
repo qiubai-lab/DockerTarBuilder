@@ -1,0 +1,45 @@
+name: x86-64 Pull and Save Docker Image
+on:
+  workflow_dispatch:
+    inputs:
+      docker_images:
+        description: '请填写docker镜像名称 多个用英文逗号分开'
+        required: true
+        default: 'alpine:latest'  # 设置默认的 Docker 镜像列表
+      registry_addr:
+        description: '请填写镜像仓库地址(不要带https://或http://)'
+        required: true
+        default: 'docker.io' 
+      registry_username:
+        description: '请填写镜像仓库用户名'
+        required: true
+        default: 'username'
+      registry_password:
+        description: '请填写镜像仓库密码'
+        required: true
+        default: 'password'
+
+jobs:
+  pull_and_package:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Login to Docker Registry
+      run: |
+          echo "${{ github.event.inputs.registry_password }}" | docker login -u "{{ github.event.inputs.registry_username }}" --password-stdin "${{ github.event.inputs.registry_addr}}"
+
+    - name: Clean up Docker to free space
+      run: |
+          docker system prune -a -f
+          docker volume prune -f
+
+    - name: Tag and Push Docker Images
+      run: |
+        images="${{ github.event.inputs.docker_images }}"
+        docker tag $images ${{ github.event.inputs.registry_addr}}/$images
+        docker push ${{ github.event.inputs.registry_addr}}/$images
+        # docker tag ${{ github.event.inputs.docker_images }} `echo "${{ github.event.inputs.registry_addr}}" | awk '{gsub(/https?:\/\//, ""); print}'`/${{ github.event.inputs.docker_images }}
+        # docker push `echo "${{ github.event.inputs.registry_addr}}" | awk '{gsub(/https?:\/\//, ""); print}'`/${{ github.event.inputs.docker_images }}
