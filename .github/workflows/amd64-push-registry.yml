@@ -10,7 +10,6 @@ on:
 jobs:
   pull_and_package:
     runs-on: ubuntu-latest
-    environment: Configure Registry
 
     steps:
     - name: Checkout repository
