@@ -26,8 +26,8 @@ jobs:
 
     - name: Tag and Push Docker Images
       run: |
-        docker tag "${{ github.event.inputs.docker_images }}" "${{ secrets.REGISTRY_ADDR }}/${{ github.event.inputs.docker_images }}"
-        docker push "${{ secrets.REGISTRY_ADDR }}/${{ github.event.inputs.docker_images }}"
+        docker tag "${{ github.event.inputs.docker_images }}" "${{ secrets.REGISTRY_ADDR }}/base/${{ github.event.inputs.docker_images }}"
+        docker push "${{ secrets.REGISTRY_ADDR }}/base/${{ github.event.inputs.docker_images }}"
 
     - name: Clean up Docker to free space
       run: |
