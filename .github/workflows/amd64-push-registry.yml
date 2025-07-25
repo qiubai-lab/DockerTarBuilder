@@ -1,0 +1,35 @@
+name: x86-64 Pull and Push Docker Image To Registry
+on:
+  workflow_dispatch:
+    inputs:
+      docker_images:
+        description: '请填写docker镜像名称 多个用英文逗号分开'
+        required: true
+        default: 'alpine:latest'  # 设置默认的 Docker 镜像列表
+
+jobs:
+  pull_and_package:
+    runs-on: ubuntu-latest
+    environment: Configure Registry
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Login to Docker Registry
+      run: |
+          echo "${{ secrets.PASSWORD }}" | docker login -u "${{ secrets.USERNAME }}" --password-stdin "${{ secrets.REGISTRY_ADDR }}"
+    
+    - name: Pull Docker Images
+      run: |
+        docker pull "${{ github.event.inputs.docker_images }}" --platform "linux/amd64"
+
+    - name: Tag and Push Docker Images
+      run: |
+        docker tag "${{ github.event.inputs.docker_images }}" "${{ secrets.REGISTRY_ADDR }}/${{ github.event.inputs.docker_images }}"
+        docker push "${{ secrets.REGISTRY_ADDR }}/${{ github.event.inputs.docker_images }}"
+
+    - name: Clean up Docker to free space
+      run: |
+          docker system prune -a -f
+          docker volume prune -f
