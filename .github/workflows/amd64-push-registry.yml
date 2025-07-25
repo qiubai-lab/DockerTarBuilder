@@ -10,6 +10,9 @@ on:
 jobs:
   pull_and_package:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
 
     steps:
     - name: Checkout repository
@@ -17,7 +20,7 @@ jobs:
 
     - name: Login to Docker Registry
       run: |
-          echo "${{ vars.PASSWORD }}" | docker login -u "${{ vars.USERNAME }}" --password-stdin "${{ secrets.REGISTRY_ADDR }}"
+          echo "${{ secrets.PASSWORD }}" | docker login -u "${{ secrets.USERNAME }}" --password-stdin "${{ secrets.REGISTRY_ADDR }}"
     
     - name: Pull Docker Images
       run: |
@@ -25,8 +28,8 @@ jobs:
 
     - name: Tag and Push Docker Images
       run: |
-        docker tag "${{ github.event.inputs.docker_images }}" "${{ vars.REGISTRY_ADDR }}/base/${{ github.event.inputs.docker_images }}"
-        docker push "${{ vars.REGISTRY_ADDR }}/base/${{ github.event.inputs.docker_images }}"
+        docker tag "${{ github.event.inputs.docker_images }}" "${{ secrets.REGISTRY_ADDR }}/base/${{ github.event.inputs.docker_images }}"
+        docker push "${{ secrets.REGISTRY_ADDR }}/base/${{ github.event.inputs.docker_images }}"
 
     - name: Clean up Docker to free space
       run: |
